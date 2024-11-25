@@ -88,7 +88,7 @@ const confirm: RequestHandler = async (req, res) => {
     const controller = RideControllerFactory.create()
     await controller.confirm(input)
 
-    res.status(200).send('Viagem confirmada com sucesso')
+    res.status(200).send({ success: true })
   } catch (error) {
     if (error instanceof CustomError) {
       res.status(error.statusCode).send({

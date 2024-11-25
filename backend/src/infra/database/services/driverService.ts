@@ -1,15 +1,32 @@
 import DatabaseInterface from '@/infra/database/database.interface'
-import { type DriverServiceInterface } from './driverService.interface'
+import {
+  RIDE_INPUT,
+  type DriverServiceInterface,
+} from './driverService.interface'
 
 export class PGDriverService implements DriverServiceInterface {
   constructor(private readonly database: DatabaseInterface) {}
+  ride(input: RIDE_INPUT): Promise<any> {
+    return this.database.execute(
+      `INSERT INTO ride (customer_id, origin, destination, distance, duration, driver_id,value) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [
+        input.customer_id,
+        input.origin,
+        input.destination,
+        input.distance,
+        input.duration,
+        input.driverId,
+        input.value,
+      ],
+    )
+  }
   getDriverByArgs(args: { id: number } | { name: string }): Promise<any> {
     const statement: string =
       'id' in args ? 'WHERE id = $1' : 'WHERE fullname = $1'
     const params = 'id' in args ? [args.id] : [args.name]
     return this.database.query(
-      `SELECT id, fullname, bio FROM driver ${statement}`,
-      [params],
+      `SELECT id, fullname, bio,minkm,tax FROM driver ${statement}`,
+      params,
     )
   }
   async getDriversByDistance(distance: number): Promise<any> {

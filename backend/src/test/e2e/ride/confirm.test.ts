@@ -77,7 +77,8 @@ describe('Should test Ride API path ride/confirm', () => {
           name: 'Invalid Driver',
         },
       })
-    expect(response.status).toBe(400)
+    expect(response.status).toBe(404)
+    expect(response.body).toHaveProperty('error_code', 'DRIVER_NOT_FOUND')
     expect(response.body).toHaveProperty(
       'error_description',
       'Motorista inválido.',
@@ -91,14 +92,14 @@ describe('Should test Ride API path ride/confirm', () => {
         customer_id: '123',
         origin: 'Origin Address',
         destination: 'Destination Address',
-        distance: 1000, // Quilometragem inválida
+        distance: 1, // Quilometragem inválida
         duration: '00:15',
         driver: {
-          id: 1,
-          name: 'Driver Name',
+          id: 2,
         },
       })
-    expect(response.status).toBe(400)
+    expect(response.status).toBe(406)
+    expect(response.body.error_code).toBe('INVALID_DISTANCE')
     expect(response.body.error_description).toBe(
       'A quilometragem informada não é válida para o motorista selecionado.',
     )
@@ -110,7 +111,7 @@ describe('Should test Ride API path ride/confirm', () => {
         customer_id: '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
         origin: 'Rua Quixada 38,21210-440, Rio de Janeiro, rj',
         destination: 'Rua Cacequi 262, 21210-760, Rio de Janeiro, RJ',
-        distance: 2,
+        distance: 21,
         duration: '202s',
         driver: {
           id: 2,

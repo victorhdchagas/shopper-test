@@ -1,5 +1,6 @@
 import { RidePostDTO } from '@/domain/dtos/ride/ridepost.dto'
 import DriverNotFoundError from '@/domain/errors/drivernotfounderror'
+import InvalidDataError from '@/domain/errors/invaliddata'
 import InvalidDistanceError from '@/domain/errors/invaliddistanceerror'
 import RoutesNotFoundError from '@/domain/errors/routesnotfound'
 import { DriverServiceInterface } from '@/infra/database/services/driverService.interface'
@@ -17,6 +18,7 @@ interface CONFIRM_INPUT {
   destination: string
   distance: number
   duration: string
+  value: number
   driver:
     | {
         id: number
@@ -100,12 +102,22 @@ export class RideController {
     const receivedDriverData = await this.driverService.getDriverByArgs(
       input.driver,
     )
-    if (!receivedDriverData)
-      throw new DriverNotFoundError('Motorista não encontrado.')
-    if (input.distance < receivedDriverData.minkm)
-      throw new InvalidDistanceError(
-        'A quilometragem informada não é válida para o motorista selecionado.',
-      )
+    if (
+      !receivedDriverData ||
+      receivedDriverData.length === 0 ||
+      !receivedDriverData[0] ||
+      typeof receivedDriverData[0].id !== 'number'
+    )
+      throw new DriverNotFoundError('Motorista inválido.')
+    if (input.distance < receivedDriverData[0].minkm)
+      throw new InvalidDistanceError()
+    if (!input.duration.match(/^\d+[smh]$/))
+      throw new InvalidDataError('Duração inválida.')
+    await this.driverService.ride({
+      ...input,
+      driverId: receivedDriverData[0].id,
+    })
+    return
   }
   async getRide() {}
 }

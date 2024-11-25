@@ -29,8 +29,7 @@ export default class PostgresDatabaseService implements DatabaseInterface {
     this.logger.info('Executando a queryOne:\n', query)
     throw new Error('Method not implemented.')
   }
-  execute(query: string): Promise<void> {
-    this.logger.info('Executando Execute:\n', query)
-    throw new Error('Method not implemented.')
+  async execute(query: string, ...params: any): Promise<void> {
+    await this.db.none(query, ...params)
   }
 }
