@@ -6,6 +6,18 @@ import {
 
 export class PGDriverService implements DriverServiceInterface {
   constructor(private readonly database: DatabaseInterface) {}
+  getCustomerRides(customer_id: string, driver_id?: number): Promise<any> {
+    const statement: string =
+      typeof driver_id === 'number'
+        ? 'WHERE r.customer_id = $1 AND r.driver_id = $2'
+        : 'WHERE r.customer_id = $1'
+    const params =
+      typeof driver_id === 'number' ? [customer_id, driver_id] : [customer_id]
+    return this.database.query(
+      `SELECT r.id, r.customer_id, r.origin, r.destination, r.distance, r.duration, r.driver_id, r.value, d.id as driver_id, d.fullname  FROM ride r LEFT JOIN driver d ON r.driver_id = d.id ${statement} order by r.id desc`,
+      params,
+    )
+  }
   ride(input: RIDE_INPUT): Promise<any> {
     return this.database.execute(
       `INSERT INTO ride (customer_id, origin, destination, distance, duration, driver_id,value) VALUES ($1, $2, $3, $4, $5, $6, $7)`,

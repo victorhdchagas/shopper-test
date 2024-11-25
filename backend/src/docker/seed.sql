@@ -84,6 +84,12 @@ values
         '12345678'
     );
 
+(
+    '3d254137-d502-4c5f-8ae8-2b0b845fd4d1',
+    'johnadamole@gmail.com',
+    '12345678'
+);
+
 insert into
     customer (id, fullname, user_id)
 values
@@ -91,6 +97,11 @@ values
         '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
         'John Doe',
         '2be17af3-d65e-4cdb-893f-6b320b7d0b7d'
+    ),
+    (
+        '3d254137-d502-4c5f-8ae8-2b0b845fd4d1',
+        'John Ada Mole',
+        '3d254137-d502-4c5f-8ae8-2b0b845fd4d1'
     );
 
 insert into

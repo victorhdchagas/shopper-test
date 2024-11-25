@@ -2,6 +2,8 @@ import { RidePostDTO } from '@/domain/dtos/ride/ridepost.dto'
 import DriverNotFoundError from '@/domain/errors/drivernotfounderror'
 import InvalidDataError from '@/domain/errors/invaliddata'
 import InvalidDistanceError from '@/domain/errors/invaliddistanceerror'
+import InvalidDriverError from '@/domain/errors/invaliddrivererror'
+import NoRidesFoundError from '@/domain/errors/noridesfounderror'
 import RoutesNotFoundError from '@/domain/errors/routesnotfound'
 import { DriverServiceInterface } from '@/infra/database/services/driverService.interface'
 import { RouteTracerInterface } from '@/infra/routestracer/routestracer.interface'
@@ -119,5 +121,25 @@ export class RideController {
     })
     return
   }
-  async getRide() {}
+  async getRide(customer_id: string, driver_id?: number) {
+    const databaseResponse = await this.driverService.getCustomerRides(
+      customer_id,
+      driver_id,
+    )
+    if (databaseResponse.length === 0) throw new NoRidesFoundError()
+    return {
+      customer_id,
+      rides: databaseResponse.map((ride: any) => ({
+        id: ride.id,
+        origin: ride.origin,
+        destination: ride.destination,
+        distance: ride.distance,
+        duration: ride.duration,
+        driver: {
+          id: ride.driver_id,
+          name: ride.driver_name,
+        },
+      })),
+    }
+  }
 }

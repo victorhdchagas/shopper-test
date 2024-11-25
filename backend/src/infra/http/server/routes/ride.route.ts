@@ -4,6 +4,7 @@ import RideControllerFactory from '@/domain/factories/RideControllerFactory'
 import { CustomError } from '@/domain/errors/customerror'
 import InvalidDataError from '@/domain/errors/invaliddata'
 import logger from '@/infra/logger/winstoninitialize'
+import InvalidDriverError from '@/domain/errors/invaliddrivererror'
 const RideRouter = express.Router()
 
 RideRouter.use(userMiddleware)
@@ -115,14 +116,50 @@ const confirm: RequestHandler = async (req, res) => {
  * @param req - The Request Object (params must have driver_id )
  * @param res
  */
-const getRide: RequestHandler = (req, res) => {
-  res.send("Hi, i'm goku in Ride!")
+const getRide: RequestHandler = async (req, res) => {
+  const { customer_id } = req.params
+  const driver_id = req.query.driver_id as any
+  try {
+    if (typeof customer_id !== 'string') {
+      throw new InvalidDataError('Invalid data')
+    }
+    if (
+      driver_id &&
+      (driver_id.indexOf('.') >= 0 || isNaN(driver_id) || driver_id <= 0)
+    ) {
+      throw new InvalidDriverError()
+    }
+    const controller = RideControllerFactory.create()
+    const output = await controller.getRide(
+      customer_id,
+      driver_id ? parseInt(driver_id) : undefined,
+    )
+
+    res.status(200).send(output)
+
+    // res.send(output)
+  } catch (error) {
+    switch (true) {
+      case error instanceof CustomError:
+        res.status(error.statusCode).send({
+          error_description: error.message,
+          error_code: error.name,
+        })
+        return
+      case error instanceof Error:
+        logger.error('Erro desconhecido', error)
+        res.status(500).send({ error: 'Error desconhecido' })
+        return
+      default:
+        res.status(500).send({ error: 'Internal Server Error' })
+    }
+  }
 }
 
 RideRouter.post('/estimate', estimate)
 
 RideRouter.patch('/confirm', confirm)
 
-RideRouter.get('/{customer_id}', getRide)
+RideRouter.get('/:customer_id?', getRide)
 
 export default RideRouter
