@@ -12,6 +12,11 @@ export default class ShopperConfig extends ShopperConfigInterface {
     if (port) return parseInt(port)
     throw new Error('API_PORT is required')
   }
+  get GOOGLE_API_KEY(): string {
+    const googleApikey = process.env.GOOGLE_API_KEY
+    if (googleApikey) return googleApikey
+    throw new Error('GOOGLE_API_KEY is required')
+  }
 
   get DB_HOST(): string {
     const dbhost = process.env.DB_HOST

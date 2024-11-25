@@ -6,6 +6,7 @@ export default abstract class ShopperConfigInterface {
     })
   }
   abstract API_PORT: number
+  abstract GOOGLE_API_KEY: string
   abstract DB_HOST: string
   abstract DB_USER: string
   abstract DB_PASSWD: string

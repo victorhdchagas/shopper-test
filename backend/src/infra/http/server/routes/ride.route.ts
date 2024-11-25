@@ -1,5 +1,9 @@
 import express, { RequestHandler } from 'express'
 import { userMiddleware } from '../middlewares/user.middleware'
+import RideControllerFactory from '@/domain/factories/RideControllerFactory'
+import { CustomError } from '@/domain/errors/customerror'
+import InvalidDataError from '@/domain/errors/invaliddata'
+import logger from '@/infra/logger/winstoninitialize'
 const RideRouter = express.Router()
 
 RideRouter.use(userMiddleware)
@@ -10,8 +14,42 @@ RideRouter.use(userMiddleware)
  * @param {Request} req - The request object.
  * @param {Response} res - The response object.
  */
-const estimate: RequestHandler = (req, res) => {
-  res.send("Hi, i'm goku in Ride!")
+const estimate: RequestHandler = async (req, res) => {
+  const input = req.body
+  try {
+    if (
+      !input.origin ||
+      typeof input.origin !== 'string' ||
+      !input.destination ||
+      typeof input.destination !== 'string' ||
+      !input.customer_id ||
+      typeof input.customer_id !== 'string'
+    ) {
+      throw new InvalidDataError('Invalid data')
+    }
+    if (input.origin === input.destination) {
+      throw new InvalidDataError("Origin and destination can't be the same")
+    }
+    const useCase = RideControllerFactory.create()
+    const output = await useCase.estimate(input)
+
+    res.send(output)
+  } catch (error) {
+    switch (true) {
+      case error instanceof CustomError:
+        res.status(error.statusCode).send({
+          error_description: error.message,
+          error_code: error.name,
+        })
+        return
+      case error instanceof Error:
+        logger.error('Erro desconhecido', error)
+        res.status(500).send({ error: 'Error desconhecido' })
+        return
+      default:
+        res.status(500).send({ error: 'Internal Server Error' })
+    }
+  }
 }
 
 /**
@@ -19,8 +57,54 @@ const estimate: RequestHandler = (req, res) => {
  * @param req - The Request Object
  * @param res - The Response Object
  */
-const confirm: RequestHandler = (req, res) => {
-  res.send("Hi, i'm goku in Ride!")
+const confirm: RequestHandler = async (req, res) => {
+  const input = req.body
+  try {
+    if (
+      !input.origin ||
+      typeof input.origin !== 'string' ||
+      !input.destination ||
+      typeof input.destination !== 'string'
+    ) {
+      throw new InvalidDataError(
+        'Os endereços de origem e destino não podem estar em branco.',
+      )
+    }
+    if (
+      typeof input.customer_id !== 'string' ||
+      input.customer_id.length === 0
+    ) {
+      throw new InvalidDataError('O id do usuário não pode estar em branco.')
+    }
+    if (input.origin === input.destination) {
+      throw new InvalidDataError(
+        'Os endereços de origem e destino não podem ser o mesmo endereço.',
+      )
+    }
+    if (!input.driver || Object.keys(input.driver).length === 0) {
+      throw new InvalidDataError('Motorista inválido')
+    }
+
+    const controller = RideControllerFactory.create()
+    await controller.confirm(input)
+
+    res.status(200).send('Viagem confirmada com sucesso')
+  } catch (error) {
+    if (error instanceof CustomError) {
+      res.status(error.statusCode).send({
+        error_description: error.message,
+        error_code: error.name,
+      })
+      return
+    } else if (error instanceof Error) {
+      logger.error('Erro desconhecido', error)
+      res.status(500).send({ error_description: 'Error desconhecido' })
+      return
+    } else {
+      res.status(500).send({ error_description: 'Internal Server Error' })
+      return
+    }
+  }
 }
 
 /**
