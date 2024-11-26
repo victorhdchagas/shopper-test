@@ -6,6 +6,12 @@ import {
 
 export class PGDriverService implements DriverServiceInterface {
   constructor(private readonly database: DatabaseInterface) {}
+  getDriversByCustomer(customer_id: string): Promise<any> {
+    return this.database.query(
+      `SELECT d.id, d.fullname, d.bio,d.minkm,d.tax FROM driver d inner join ride r on d.id = r.driver_id group by d.id where r.customer_id = $1 order by COUNT(r.id) desc`,
+      [customer_id],
+    )
+  }
   getCustomerRides(customer_id: string, driver_id?: number): Promise<any> {
     const statement: string =
       typeof driver_id === 'number'
@@ -14,7 +20,7 @@ export class PGDriverService implements DriverServiceInterface {
     const params =
       typeof driver_id === 'number' ? [customer_id, driver_id] : [customer_id]
     return this.database.query(
-      `SELECT r.id, r.customer_id, r.origin, r.destination, r.distance, r.duration, r.driver_id, r.value, d.id as driver_id, d.fullname  FROM ride r LEFT JOIN driver d ON r.driver_id = d.id ${statement} order by r.id desc`,
+      `SELECT r.id, r.customer_id, r.origin, r.destination, r.distance, r.duration, r.driver_id, r.value, d.id as driver_id, d.fullname, r.created_at  FROM ride r LEFT JOIN driver d ON r.driver_id = d.id ${statement} order by r.id desc`,
       params,
     )
   }

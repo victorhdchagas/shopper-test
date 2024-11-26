@@ -71,7 +71,7 @@ export class RideController {
         rating: number
         id: any
         fullname: any
-        description: any
+        bio: any
         tax: number
         cost: number
       }) => {
@@ -79,7 +79,7 @@ export class RideController {
         return {
           id: driver.id,
           name: driver.fullname,
-          description: driver.description,
+          description: driver.bio,
           vehicle: driver.alias,
           review: {
             comment: driver.comment, // Comentários deveriam ser opcionais.
@@ -139,6 +139,8 @@ export class RideController {
           id: ride.driver_id,
           name: ride.driver_name,
         },
+        value: ride.value,
+        created_at: ride.created_at,
       })),
     }
   }

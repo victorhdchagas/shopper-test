@@ -31,7 +31,21 @@ Optei por remover retorno do modelo no serviço, fiz isso pois optei por fazer o
 
 ## Dia 5
 
+- O endpoint de listar históricos tem uma mensagem de erro ambigua, perguntaria pra equipe sobre a real intencao deles. Rides_Not_Found pode ser tanto pra um customer inexistente quanto pra um customer novato.
+
+- Terminei a API, finalmente! Pros ultimos requisitos foi mais facil pois deu pra aplicar TDD e garantir baseado em teste e requisitos.
+
+- Iniciei o Front e me preocupo por só ter 3 dias...
+
+- Fiquei encucado, e apesar de não ter sido solicitado, acredito que eles precisaram do customer_id (precisa de um cadastro). Ficaria feio ter o id estampado na pagina. Isso é pro meu Eu futuro decidir, ja q nao tenho ngm da equipe pra consultar.
+
+- Optei por utilizar react-router pra gerenciar o estado das paginas, por ser uma SPA vai ser mais simples. Saiu uma versão nova, mas ficou confuso na doc se era uma lib only front ou uma lib de SSR, por isso optei pela versão anterior (Only Front)
+
 ## Dia 6
+
+- Criei a estrutura inicial do projeto ontem. Hoje vou tirar o dia inteiro pra desenvolver a aplicação e seus testes.
+
+- Amanhã dividirei o dia pra layout / docker issues
 
 ## Dia 7
 
