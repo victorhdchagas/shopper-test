@@ -11,7 +11,7 @@ export const FlexColumnContainer = styled.div`
 
 const Label = styled.label`
   font-size: 14px;
-  color: #333; /* Cor do texto do label */
+  color: #cecece; /* Cor do texto do label */
   margin-bottom: 4px; /* Espaçamento entre o label e o input */
 `
 

@@ -25,9 +25,11 @@ export default class PostgresDatabaseService implements DatabaseInterface {
 
     return res
   }
-  queryOne(query: string): Promise<any> {
+  async queryOne(query: string, ...params: any): Promise<any> {
     this.logger.info('Executando a queryOne:\n', query)
-    throw new Error('Method not implemented.')
+    const res = await this.db.one(query, ...params)
+
+    return res
   }
   async execute(query: string, ...params: any): Promise<void> {
     await this.db.none(query, ...params)

@@ -4,3 +4,4 @@ coverage
 .env.test
 combined.log
 error.log
+dist

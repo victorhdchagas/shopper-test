@@ -1,6 +1,8 @@
 version: '3'
 services:
   api:
+    # image: victorhdchagas/shopper-api
+    # platform: linux/amd64,linux/arm64
     build:
       context: ./backend
       dockerfile: docker/Dockerfile
@@ -10,12 +12,16 @@ services:
       - db
     environment:
       - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWD=123456
+      - DB_USER=postgres
+      - DB_PASSWD=mysecretpassword
       - DB_NAME=shopper
       - DB_PORT=5432
       - API_PORT=8080
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    command: ['node', 'dist/main']
   frontend:
+    # image: victorhdchagas/shopper-front
+    # platform: linux/amd64,linux/arm64
     build:
       context: ./frontend
       dockerfile: docker/Dockerfile
@@ -23,18 +29,22 @@ services:
       - '80:80'
     depends_on:
       - api
+
   db:
-    image: postgres:15.3
-    volumes:
-      - dbdata:/var/lib/mysql
+    # image: victorhdchagas/shopper-db
+    # platform: linux/amd64,linux/arm64
+    build:
+      context: ./db
+      dockerfile: docker/Dockerfile
+    container_name: my_postgres_db
     environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=shopper
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: shopper
+    ports:
+      - '5432:5432'
+    volumes:
+      - data_sql:/var/lib/postgresql/data # Persistent data storage
 
 volumes:
-  dbdata:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: '${PWD}/dbdata'
+  data_sql:

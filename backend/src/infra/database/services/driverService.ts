@@ -6,10 +6,13 @@ import {
 
 export class PGDriverService implements DriverServiceInterface {
   constructor(private readonly database: DatabaseInterface) {}
-  getDriversByCustomer(customer_id: string): Promise<any> {
+  getDriversByCustomer(customer_id?: string): Promise<any> {
+    const statement =
+      typeof customer_id === 'string' ? 'WHERE r.customer_id = $1' : ''
+    const args = typeof customer_id === 'string' ? [customer_id] : []
     return this.database.query(
-      `SELECT d.id, d.fullname, d.bio,d.minkm,d.tax FROM driver d inner join ride r on d.id = r.driver_id group by d.id where r.customer_id = $1 order by COUNT(r.id) desc`,
-      [customer_id],
+      `SELECT d.id, d.fullname, d.bio,d.minkm,d.tax FROM driver d inner join ride r on d.id = r.driver_id group by d.id ${statement} order by COUNT(r.id) desc`,
+      args,
     )
   }
   getCustomerRides(customer_id: string, driver_id?: number): Promise<any> {
@@ -33,7 +36,7 @@ export class PGDriverService implements DriverServiceInterface {
         input.destination,
         input.distance,
         input.duration,
-        input.driverId,
+        input.driverId, // TODO
         input.value,
       ],
     )
@@ -49,15 +52,15 @@ export class PGDriverService implements DriverServiceInterface {
   }
   async getDriversByDistance(distance: number): Promise<any> {
     return await this.database.query(
-      `SELECT d.id, d.tax, d.fullname, d.bio, v.alias,v.id AS vehicle_id,v.created_at, r.id AS review_id, r.comment, r.rating, (d.tax * $1) AS cost
+      `SELECT d.id, d.tax, d.fullname, d.bio, v.alias, v.id AS vehicle_id, v.created_at, r.id AS review_id, r.comment, r.rating, (d.tax * $1) AS cost
 FROM driver d 
 INNER JOIN vehicle v ON d.id = v.driver_id
 INNER JOIN (
-    SELECT driver_id, id, comment, rating,ROW_NUMBER() OVER (PARTITION BY driver_id ORDER BY created_at DESC) AS rn
+    SELECT driver_id, id, comment, rating, ROW_NUMBER() OVER (PARTITION BY driver_id ORDER BY created_at DESC) AS rn
     FROM review
 ) r ON d.id = r.driver_id AND r.rn = 1
-WHERE minkm >= $1
-order by cost asc;`,
+WHERE minkm <= $1
+ORDER BY cost ASC`,
       [distance],
     )
 

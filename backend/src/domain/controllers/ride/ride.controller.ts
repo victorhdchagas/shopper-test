@@ -2,7 +2,6 @@ import { RidePostDTO } from '@/domain/dtos/ride/ridepost.dto'
 import DriverNotFoundError from '@/domain/errors/drivernotfounderror'
 import InvalidDataError from '@/domain/errors/invaliddata'
 import InvalidDistanceError from '@/domain/errors/invaliddistanceerror'
-import InvalidDriverError from '@/domain/errors/invaliddrivererror'
 import NoRidesFoundError from '@/domain/errors/noridesfounderror'
 import RoutesNotFoundError from '@/domain/errors/routesnotfound'
 import { DriverServiceInterface } from '@/infra/database/services/driverService.interface'
@@ -137,7 +136,7 @@ export class RideController {
         duration: ride.duration,
         driver: {
           id: ride.driver_id,
-          name: ride.driver_name,
+          name: ride.fullname,
         },
         value: ride.value,
         created_at: ride.created_at,

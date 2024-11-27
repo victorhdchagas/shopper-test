@@ -51,8 +51,9 @@ export default class ShopperConfig extends ShopperConfigInterface {
       if (['production', 'development', 'test'].some((v) => v === NODE_ENV))
         return NODE_ENV as NODE_ENV
       throw new Error('NODE_ENV is not valid')
+    } else {
+      return 'production'
     }
-    throw new Error('NODE_ENV is required')
   }
 
   public static get(): ShopperConfigInterface {

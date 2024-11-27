@@ -47,7 +47,10 @@ describe('Should test Ride API', () => {
 
     expect(response.status).toBe(400)
     expect(response.body).toHaveProperty('error_code', 'INVALID_DATA')
-    expect(response.body).toHaveProperty('error_description', 'Invalid data')
+    expect(response.body).toHaveProperty(
+      'error_description',
+      'Origem, destino e id do usuário obrigatórios.',
+    )
   })
   it('Should fail test on blank destination', async () => {
     const input = {
@@ -62,7 +65,10 @@ describe('Should test Ride API', () => {
 
     expect(response.status).toBe(400)
     expect(response.body).toHaveProperty('error_code', 'INVALID_DATA')
-    expect(response.body).toHaveProperty('error_description', 'Invalid data')
+    expect(response.body).toHaveProperty(
+      'error_description',
+      'Origem, destino e id do usuário obrigatórios.',
+    )
   })
   it('Should fail test on blank destination', async () => {
     const input = {
@@ -76,6 +82,9 @@ describe('Should test Ride API', () => {
 
     expect(response.status).toBe(400)
     expect(response.body).toHaveProperty('error_code', 'INVALID_DATA')
-    expect(response.body).toHaveProperty('error_description', 'Invalid data')
+    expect(response.body).toHaveProperty(
+      'error_description',
+      'Origem, destino e id do usuário obrigatórios.',
+    )
   })
 })

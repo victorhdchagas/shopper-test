@@ -82,13 +82,12 @@ values
         '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
         'johndoe@gmail.com',
         '12345678'
+    ),
+    (
+        '3d254137-d502-4c5f-8ae8-2b0b845fd4d1',
+        'johnadamole@gmail.com',
+        '12345678'
     );
-
-(
-    '3d254137-d502-4c5f-8ae8-2b0b845fd4d1',
-    'johnadamole@gmail.com',
-    '12345678'
-);
 
 insert into
     customer (id, fullname, user_id)
@@ -145,25 +144,25 @@ values
     (
         '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
         1,
-        'Carro enferrujado, mas o motorista era engraçado.',
-        3
-    ),
-    (
-        '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
-        1,
         'Motorista simpático, mas errou o caminho 3 vezes. O carro cheira a donuts.',
         2
     ),
     (
         '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
-        3,
-        'Pegou um caminho muito rapido, mas envolvia uma rota exótica. Quando menos esperava o carro estava em planando em cima de um lago.',
-        4
+        1,
+        'Carro enferrujado, mas o motorista era engraçado.',
+        3
     ),
     (
         '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
         3,
         'Que viagem incrível! O carro é um show à parte e o motorista, apesar de ter uma cara de poucos amigos, foi super gente boa. Recomendo!',
+        4
+    ),
+    (
+        '2be17af3-d65e-4cdb-893f-6b320b7d0b7d',
+        3,
+        'Pegou um caminho muito rapido, mas envolvia uma rota exótica. Quando menos esperava o carro estava em planando em cima de um lago.',
         5
     ),
     (

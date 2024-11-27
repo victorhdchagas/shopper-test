@@ -34,7 +34,7 @@ export default function HistoryPage() {
         <HistoryPartial
           useCase={useCase}
           driverUseCase={getDriversUseCase}
-          customerId={state.customer_id}
+          customerId={state ? state.customer_id : undefined}
         />
 
         <Portal.PortalAtom

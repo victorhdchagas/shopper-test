@@ -7,6 +7,7 @@ import UseCaseInterface from '../../lib/types/usecase.interface'
 import ErrorBox from '../boxes/errorBox'
 import { Button } from '../buttons/button'
 import LabelInput, { FlexColumnContainer } from '../input/labelinput'
+import { Area } from '../styled/area'
 
 export default function EstimateForm({
   useCase,
@@ -31,7 +32,6 @@ export default function EstimateForm({
     const obj = Object.fromEntries(new FormData(event.currentTarget)) as {
       [key: string]: string
     }
-    await new Promise((res) => setTimeout(res, 100))
     try {
       if (error !== null) {
         setError(null)
@@ -69,39 +69,44 @@ export default function EstimateForm({
   }
   const formDisabled = !customerId || !origin || !destination || isPending
   return (
-    <form onSubmit={internalOnSubmit}>
-      <FlexColumnContainer>
-        {error && (
-          <ErrorBox message={error.error_description} code={error.error_code} />
-        )}
-        <LabelInput
-          label="customer id"
-          name="customer_id"
-          type="text"
-          placeholder="customer id"
-          value={customerId}
-          onChange={(event) => setCustomerId(event.target.value)}
-        />
-        <LabelInput
-          label="origem"
-          name="origin"
-          type="text"
-          placeholder="origem"
-          value={origin}
-          onChange={(event) => setOrigin(event.target.value)}
-        />
-        <LabelInput
-          label="destino"
-          name="destination"
-          type="text"
-          placeholder="destino"
-          value={destination}
-          onChange={(event) => setDestination(event.target.value)}
-        />
-        <Button type="submit" disabled={formDisabled}>
-          Enviar
-        </Button>
-      </FlexColumnContainer>
-    </form>
+    <Area>
+      <form onSubmit={internalOnSubmit}>
+        <FlexColumnContainer>
+          {error && (
+            <ErrorBox
+              message={error.error_description}
+              code={error.error_code}
+            />
+          )}
+          <LabelInput
+            label="customer id"
+            name="customer_id"
+            type="text"
+            placeholder="customer id"
+            value={customerId}
+            onChange={(event) => setCustomerId(event.target.value)}
+          />
+          <LabelInput
+            label="origem"
+            name="origin"
+            type="text"
+            placeholder="origem"
+            value={origin}
+            onChange={(event) => setOrigin(event.target.value)}
+          />
+          <LabelInput
+            label="destino"
+            name="destination"
+            type="text"
+            placeholder="destino"
+            value={destination}
+            onChange={(event) => setDestination(event.target.value)}
+          />
+          <Button type="submit" disabled={formDisabled}>
+            Enviar
+          </Button>
+        </FlexColumnContainer>
+      </form>
+    </Area>
   )
 }

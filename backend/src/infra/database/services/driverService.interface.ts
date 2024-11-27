@@ -12,5 +12,5 @@ export interface DriverServiceInterface {
   getDriverByArgs(args: { id: number } | { name: string }): Promise<any>
   ride(input: RIDE_INPUT): Promise<any>
   getCustomerRides(customer_id: string, driver_id?: number): Promise<any>
-  getDriversByCustomer(customer_id: string): Promise<any>
+  getDriversByCustomer(customer_id?: string): Promise<any>
 }

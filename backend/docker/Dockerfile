@@ -1,4 +1,4 @@
-FROM node:20-alpine as builder
+FROM node:20-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -14,8 +14,10 @@ RUN npm run build
 FROM node:20-alpine
 
 COPY --from=builder /usr/src/app/dist /usr/src/app/dist
+COPY --from=builder /usr/src/app/node_modules /usr/src/app/node_modules
+COPY --from=builder /usr/src/app/package.json /usr/src/app/
 
 WORKDIR /usr/src/app
 
-CMD ["node", "dist/main"]
+CMD ["npm", "start"]
 

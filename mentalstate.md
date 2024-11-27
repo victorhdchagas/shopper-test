@@ -32,22 +32,25 @@ Optei por remover retorno do modelo no serviço, fiz isso pois optei por fazer o
 ## Dia 5
 
 - O endpoint de listar históricos tem uma mensagem de erro ambigua, perguntaria pra equipe sobre a real intencao deles. Rides_Not_Found pode ser tanto pra um customer inexistente quanto pra um customer novato.
-
 - Terminei a API, finalmente! Pros ultimos requisitos foi mais facil pois deu pra aplicar TDD e garantir baseado em teste e requisitos.
-
 - Iniciei o Front e me preocupo por só ter 3 dias...
-
 - Fiquei encucado, e apesar de não ter sido solicitado, acredito que eles precisaram do customer_id (precisa de um cadastro). Ficaria feio ter o id estampado na pagina. Isso é pro meu Eu futuro decidir, ja q nao tenho ngm da equipe pra consultar.
-
 - Optei por utilizar react-router pra gerenciar o estado das paginas, por ser uma SPA vai ser mais simples. Saiu uma versão nova, mas ficou confuso na doc se era uma lib only front ou uma lib de SSR, por isso optei pela versão anterior (Only Front)
 
 ## Dia 6
 
 - Criei a estrutura inicial do projeto ontem. Hoje vou tirar o dia inteiro pra desenvolver a aplicação e seus testes.
-
 - Amanhã dividirei o dia pra layout / docker issues
 
 ## Dia 7
+
+- Desenvolvi a imagem docker, e a ultima tela (de histórico).
+- Configurei o front e back pra buildar em node:20-alpine.
+- A imagem do frontend esta em cima de nginx, tive certa dor de cabeça pra configurar pra carregar a tela "history" dinamicamente
+- Vou preparar o repositorio, submeter no docker-hub e o repo no github
+- Putz, impressionante, no final uma parada que nao fazia sentido... fez sentido. O envio do Customer_id era necessário pra validar se o ID é valido pra proxima tela, simular um pouco de sessão acho. Tratar isso foi emocionante.
+
+--- Retornos padroes pra mock
 
 Invalid API returns
 
@@ -115,7 +118,7 @@ Invalid API returns
   "languageCode": "pt-BR",
   "units": "METRIC"
 }' \
--H 'Content-Type: application/json' -H 'X-Goog-Api-Key: AIzaSyB_hic-mIg8__0eYhQGfZ81UoxWL2hyZPMX' \
+-H 'Content-Type: application/json' -H 'X-Goog-Api-Key: AIzaSyB_hic-mIg8__0eYhQGdazxcUoxWL2hyZPMX' \
 -H 'X-Goog-FieldMask: routes.duration,routes.distanceMeters,routes.legs.steps.start_location,routes.legs.steps.end_location,routes.polyline.encodedPolyline' \
 'https://routes.googleapis.com/directions/v2:computeRoutes'
 

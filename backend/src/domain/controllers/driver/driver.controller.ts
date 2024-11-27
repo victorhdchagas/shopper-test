@@ -3,8 +3,8 @@ import { DriverServiceInterface } from '@/infra/database/services/driverService.
 export class DriverController {
   constructor(private readonly driverService: DriverServiceInterface) {}
 
-  async getDriversByCustomer(customer_id: string) {
-    return this.driverService
+  async getAllDrivers(customer_id?: string) {
+    return await this.driverService
       .getDriversByCustomer(customer_id)
       .then((drivers) =>
         drivers.map((driver: any) => ({

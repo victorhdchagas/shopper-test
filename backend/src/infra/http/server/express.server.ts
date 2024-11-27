@@ -55,7 +55,9 @@ interface MiddlewareType {
 }
 
 const myAuthMiddleware: MiddlewareType = {
-  handler: (req, res) => {req.user = "wutachi"},
+  handler: (req, res) => {
+    req.user = 'wutachi'
+  },
   execAfter: false,
 }
 
@@ -66,13 +68,16 @@ server.addMiddleware({
   },
   execAfter: true,
 })
-server.addRoute({
-  path: '/',
-  method: 'get',
-  handler: (req, res) => res.send('Hello World!'),
-},{
-  path: '/test',
-  method: 'get',
-  handler: (req, res) => res.send('Hello World!'),
-  addMiddleware(myAuthMiddleware)
-})
+server.addRoute(
+  {
+    path: '/',
+    method: 'get',
+    handler: (req, res) => res.send('Hello World!'),
+  },
+  {
+    path: '/test',
+    method: 'get',
+    handler: (req, res) => res.send('Hello World!'),
+    //   addMiddleware(myAuthMiddleware)
+  },
+)

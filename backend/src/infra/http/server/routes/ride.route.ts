@@ -5,6 +5,7 @@ import { CustomError } from '@/domain/errors/customerror'
 import InvalidDataError from '@/domain/errors/invaliddata'
 import logger from '@/infra/logger/winstoninitialize'
 import InvalidDriverError from '@/domain/errors/invaliddrivererror'
+import CustomerControllerFactory from '@/domain/factories/CustomerControllerFactory'
 const RideRouter = express.Router()
 
 RideRouter.use(userMiddleware)
@@ -26,11 +27,17 @@ const estimate: RequestHandler = async (req, res) => {
       !input.customer_id ||
       typeof input.customer_id !== 'string'
     ) {
-      throw new InvalidDataError('Invalid data')
+      throw new InvalidDataError(
+        'Origem, destino e id do usuário obrigatórios.',
+      )
     }
-    if (input.origin === input.destination) {
+    if (input.origin.trim() === input.destination.trim()) {
       throw new InvalidDataError("Origin and destination can't be the same")
     }
+    const customerController = CustomerControllerFactory.create()
+
+    await customerController.getCustomer(input.customer_id)
+
     const useCase = RideControllerFactory.create()
     const output = await useCase.estimate(input)
 

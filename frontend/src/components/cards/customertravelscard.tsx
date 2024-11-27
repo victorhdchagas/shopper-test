@@ -45,7 +45,13 @@ export default function CustomerTravelsCard({
       </Field>
       <Field>
         <span>Distância</span>
-        <span>{ride.distance}</span>
+        <span>
+          {Intl.NumberFormat('pt-BR', {
+            style: 'decimal',
+            maximumFractionDigits: 2,
+          }).format(ride.distance)}
+          KM
+        </span>
       </Field>
       <Field>
         <span>Tempo</span>
