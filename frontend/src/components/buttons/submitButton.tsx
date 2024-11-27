@@ -1,17 +1,16 @@
 import React from 'react'
-import styled from 'styled-components'
+import { Button } from './button'
 
 interface SubmitButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isPending: boolean
 }
-const Button = styled.button`
-  background-color: red;
-`
+
+const withSubmitButton = (props: SubmitButtonProps) => (
+  <Button {...props} type="submit" disabled={props.disabled || props.isPending}>
+    {props.isPending ? 'Carregando' : props.children}
+  </Button>
+)
 export const SubmitButton = (props: SubmitButtonProps) => {
-  return (
-    <Button type="submit" disabled={props.disabled || props.isPending}>
-      {props.isPending ? 'Carregando' : props.children}
-    </Button>
-  )
+  return withSubmitButton(props)
 }

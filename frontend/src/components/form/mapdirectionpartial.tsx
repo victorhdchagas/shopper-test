@@ -10,10 +10,15 @@ interface Location {
 
 interface MapDirectionPartialProps {
   locations: { start: Location; end: Location }
+  steps: {
+    startLocation: { latLng: Location }
+    endLocation: { latLng: Location }
+  }[]
 }
 
 const MapDirectionPartial: React.FC<MapDirectionPartialProps> = ({
   locations,
+  steps,
 }) => {
   const { start, end } = locations
 
@@ -43,7 +48,19 @@ const MapDirectionPartial: React.FC<MapDirectionPartialProps> = ({
       <Marker position={endPosition}>
         <Popup>Fim</Popup>
       </Marker>
-      <Polyline positions={[position, endPosition]} color="blue" />
+      <Polyline
+        positions={steps.map((step) => [
+          [
+            step.startLocation.latLng.latitude,
+            step.startLocation.latLng.longitude,
+          ] as LatLngExpression,
+          [
+            step.endLocation.latLng.latitude,
+            step.endLocation.latLng.longitude,
+          ] as LatLngExpression,
+        ])}
+        color="blue"
+      />
     </MapContainer>
   )
 }

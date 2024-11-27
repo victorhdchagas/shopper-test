@@ -9,12 +9,15 @@ export default class HistoryUseCase
       HistoryResponse
     >
 {
+  fetch?: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
   constructor(
-    private readonly fetch: (
+    paramFetch?: (
       input: RequestInfo | URL,
       init?: RequestInit,
     ) => Promise<Response>,
-  ) {}
+  ) {
+    if (paramFetch) this.fetch = paramFetch
+  }
   async execute({
     customer_id,
     driver_id,
@@ -25,8 +28,8 @@ export default class HistoryUseCase
     const searchParams = new URLSearchParams()
     if (driver_id) searchParams.set('driver_id', driver_id.toString())
 
-    const response = await this.fetch(
-      `http://localhost:3000/ride/${customer_id}?${searchParams.toString()}`,
+    const response = await (this.fetch || fetch)(
+      `http://localhost:8080/ride/${customer_id}?${searchParams.toString()}`,
     )
     if (response.status >= 200 && response.status < 500) {
       const data = (await response.json()) as

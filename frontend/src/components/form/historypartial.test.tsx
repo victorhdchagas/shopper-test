@@ -71,7 +71,10 @@ describe('Should test history partial', () => {
         .fn()
         .mockImplementation(() => Promise.resolve(defaultInput)),
     }
-    render(<HistoryPartial useCase={useCase} drivers={drivers} />)
+    const driverUseCase: UseCaseInterface = {
+      execute: jest.fn().mockImplementation(() => Promise.resolve(drivers)),
+    }
+    render(<HistoryPartial useCase={useCase} driverUseCase={driverUseCase} />)
 
     // Verifica se o campo para informar o ID do usuário está presente
     const userIdInput = screen.getByRole('textbox', { name: /id do usuário/i })
@@ -100,7 +103,7 @@ describe('Should test history partial', () => {
 
       // Verifica se os detalhes da viagem estão presentes em cada div
       tripDivs.forEach((tripDiv) => {
-        expect(tripDiv).toHaveTextContent(/data e hora/i)
+        expect(tripDiv).toHaveTextContent(/data e hora da viagem/i)
         expect(tripDiv).toHaveTextContent(/nome do motorista/i)
         expect(tripDiv).toHaveTextContent(/origem/i)
         expect(tripDiv).toHaveTextContent(/destino/i)
@@ -121,7 +124,12 @@ describe('Should test history partial', () => {
     })
     const fakeUseCase = new HistoryUseCase(fakeFetch)
 
-    render(<HistoryPartial useCase={fakeUseCase} drivers={drivers} />)
+    const driverUseCase: UseCaseInterface = {
+      execute: jest.fn().mockImplementation(() => Promise.resolve(drivers)),
+    }
+    render(
+      <HistoryPartial useCase={fakeUseCase} driverUseCase={driverUseCase} />,
+    )
     const userIdInput = screen.getByRole('textbox', { name: /id do usuário/i })
     const driverSelect = screen.getByRole('combobox', { name: /motorista/i })
     const applyFilterButton = screen.getByRole('button', {

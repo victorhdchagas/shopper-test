@@ -1,22 +1,32 @@
 import React from 'react'
-import { SubmitButton } from '../buttons/submitButton'
-import UseCaseInterface from '../../lib/types/usecase.interface'
-import ErrorBox from '../boxes/errorBox'
+import { useNavigate } from 'react-router'
 import CustomError, {
   CustomErrorProtocol,
 } from '../../lib/types/error/customerror'
+import UseCaseInterface from '../../lib/types/usecase.interface'
+import ErrorBox from '../boxes/errorBox'
+import { Button } from '../buttons/button'
+import LabelInput, { FlexColumnContainer } from '../input/labelinput'
 
 export default function EstimateForm({
   useCase,
+  customerId: _customerId,
+  origin: _origin,
+  destination: _destination,
 }: {
   useCase: UseCaseInterface
+  customerId?: string | null
+  origin?: string | null
+  destination?: string | null
 }) {
-  const [customerId, setCustomerId] = React.useState('')
-  const [origin, setOrigin] = React.useState('')
-  const [destination, setDestination] = React.useState('')
+  const [customerId, setCustomerId] = React.useState(_customerId ?? '')
+  const [origin, setOrigin] = React.useState(_origin ?? '')
+  const [destination, setDestination] = React.useState(_destination ?? '')
   const [isPending, setIsPending] = React.useState(false)
   const [error, setError] = React.useState<CustomErrorProtocol | null>(null)
+  const navigate = useNavigate()
   const internalOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     setIsPending(true)
     const obj = Object.fromEntries(new FormData(event.currentTarget)) as {
       [key: string]: string
@@ -26,8 +36,15 @@ export default function EstimateForm({
       if (error !== null) {
         setError(null)
       }
-      await useCase.execute(obj)
+      const response = await useCase.execute(obj)
+      if (response) {
+        navigate(`/options`, {
+          state: { ...response, filter: { origin, destination, customerId } },
+        })
+      }
+      setIsPending(false)
     } catch (error) {
+      setIsPending(false)
       if (error instanceof CustomError) {
         setError({
           error_code: error.error_code,
@@ -53,66 +70,38 @@ export default function EstimateForm({
   const formDisabled = !customerId || !origin || !destination || isPending
   return (
     <form onSubmit={internalOnSubmit}>
-      {error && (
-        <ErrorBox message={error.error_description} code={error.error_code} />
-      )}
-      <LabelInput
-        label="customer id"
-        name="customer_id"
-        type="text"
-        placeholder="customer id"
-        value={customerId}
-        onChange={(event) => setCustomerId(event.target.value)}
-      />
-      <LabelInput
-        label="origem"
-        name="origin"
-        type="text"
-        placeholder="origem"
-        value={origin}
-        onChange={(event) => setOrigin(event.target.value)}
-      />
-      <LabelInput
-        label="destino"
-        name="destination"
-        type="text"
-        placeholder="destino"
-        value={destination}
-        onChange={(event) => setDestination(event.target.value)}
-      />
-      <SubmitButton type="submit" disabled={formDisabled} isPending={isPending}>
-        Enviar
-      </SubmitButton>
+      <FlexColumnContainer>
+        {error && (
+          <ErrorBox message={error.error_description} code={error.error_code} />
+        )}
+        <LabelInput
+          label="customer id"
+          name="customer_id"
+          type="text"
+          placeholder="customer id"
+          value={customerId}
+          onChange={(event) => setCustomerId(event.target.value)}
+        />
+        <LabelInput
+          label="origem"
+          name="origin"
+          type="text"
+          placeholder="origem"
+          value={origin}
+          onChange={(event) => setOrigin(event.target.value)}
+        />
+        <LabelInput
+          label="destino"
+          name="destination"
+          type="text"
+          placeholder="destino"
+          value={destination}
+          onChange={(event) => setDestination(event.target.value)}
+        />
+        <Button type="submit" disabled={formDisabled}>
+          Enviar
+        </Button>
+      </FlexColumnContainer>
     </form>
-  )
-}
-
-function LabelInput({
-  label,
-  name,
-  placeholder,
-  type,
-  value,
-  onChange,
-}: {
-  label: string
-  name: string
-  type: string
-  placeholder: string
-  value: string
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}) {
-  return (
-    <div>
-      <label htmlFor={name}>{label}</label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      />
-    </div>
   )
 }

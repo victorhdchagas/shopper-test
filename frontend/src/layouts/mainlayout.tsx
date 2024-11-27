@@ -1,8 +1,11 @@
+import { Outlet } from 'react-router'
+import MainHeader from '../components/header/mainheader'
+
 export default function MainLayout() {
   return (
     <div>
-      MainLayout
-      <slot></slot>
+      <MainHeader />
+      <Outlet />
     </div>
   )
 }

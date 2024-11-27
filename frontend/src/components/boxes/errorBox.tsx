@@ -1,3 +1,5 @@
+import { FlexColumnContainer } from '../input/labelinput'
+
 export default function ErrorBox({
   message,
   code,
@@ -6,9 +8,9 @@ export default function ErrorBox({
   code: string
 }) {
   return (
-    <div role="alert" aria-live="assertive" aria-label="error">
-      <span>{code}</span>
+    <FlexColumnContainer role="alert" aria-live="assertive" aria-label="error">
+      <span style={{ fontWeight: 'bold' }}>{code}</span>
       <span>{message}</span>
-    </div>
+    </FlexColumnContainer>
   )
 }

@@ -1,13 +1,9 @@
 import CustomError, { CustomErrorProtocol } from '../../types/error/customerror'
-import { EstimateServiceResponse } from '../../types/services/ride/estimate.response'
+import { ConfirmResponseInput } from '../../types/services/ride/confirm.response'
 import UseCaseInterface from '../../types/usecase.interface'
 
-export default class EstimateUseCase
-  implements
-    UseCaseInterface<
-      { customer_id: string; origin: string; destination: string },
-      EstimateServiceResponse
-    >
+export default class ConfirmUseCase
+  implements UseCaseInterface<ConfirmResponseInput, { success: 'string' }>
 {
   fetch?: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
   constructor(
@@ -18,35 +14,28 @@ export default class EstimateUseCase
   ) {
     if (paramFetch) this.fetch = paramFetch
   }
-  async execute({
-    customer_id,
-    origin,
-    destination,
-  }: {
-    customer_id: string
-    origin: string
-    destination: string
-  }) {
+  async execute(props: ConfirmResponseInput) {
     //Essa gambiarra me envergonha, mas preciso fazer ela pra poder ter um ambiente de testes. Precisaria de mais tempo pra pensar em algo mais sofisticado
     const response = this.fetch
-      ? await this.fetch(`http://localhost:8080/ride/estimate`, {
-          method: 'POST',
+      ? await this.fetch(`http://localhost:8080/ride/confirm`, {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ customer_id, origin, destination }),
+          body: JSON.stringify(props),
         })
-      : await fetch(`http://localhost:8080/ride/estimate`, {
-          method: 'POST',
+      : await fetch(`http://localhost:8080/ride/confirm`, {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ customer_id, origin, destination }),
+          body: JSON.stringify(props),
         })
+
     if (response.status >= 200 && response.status < 500) {
       const data = (await response.json()) as
         | CustomErrorProtocol
-        | EstimateServiceResponse
+        | { success: 'string' }
       if ('error_description' in data) {
         throw new CustomError(data.error_description, data.error_code)
       }
@@ -54,9 +43,9 @@ export default class EstimateUseCase
         return data
       }
     } else {
-      throw new Error('Unhandled error')
+      throw new CustomError('Unhandled error', 'UNHANDLED_ERROR')
     }
 
-    throw new Error('Unhandled error')
+    throw new CustomError('Unhandled error', 'CONFIRM_UC')
   }
 }

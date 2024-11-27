@@ -4,6 +4,7 @@ import EstimateForm from './estimateform'
 import UseCaseInterface from '../../lib/types/usecase.interface'
 import EstimateUseCase from '../../lib/useCases/ride/estimate.usecase'
 import { buildFakeFetcher } from '../../test/utils/fakefetcher'
+import { BrowserRouter as Router } from 'react-router'
 
 describe('Should test RideForm', () => {
   const useCase: UseCaseInterface = {
@@ -14,7 +15,11 @@ describe('Should test RideForm', () => {
     HTMLFormElement.prototype.requestSubmit = jest.fn()
   })
   test('Should have all inputs', () => {
-    render(<EstimateForm useCase={useCase} />)
+    render(
+      <Router>
+        <EstimateForm useCase={useCase} />
+      </Router>,
+    )
     const nameInput = screen.getByLabelText(/customer id/i)
     const origemInput = screen.getByLabelText(/origem/i)
     const destinoInput = screen.getByLabelText(/destino/i)
@@ -26,12 +31,20 @@ describe('Should test RideForm', () => {
     expect(submitButton).toBeInTheDocument()
   })
   test('Should give error without customer_id', () => {
-    render(<EstimateForm useCase={useCase} />)
+    render(
+      <Router>
+        <EstimateForm useCase={useCase} />
+      </Router>,
+    )
     const submitButton = screen.getByRole('button', { name: /enviar/i })
     expect(submitButton).toBeDisabled()
   })
   test('Should handlesubmit be called once', async () => {
-    render(<EstimateForm useCase={useCase} />)
+    render(
+      <Router>
+        <EstimateForm useCase={useCase} />
+      </Router>,
+    )
     const customerIdInput = screen.getByLabelText(/customer id/i)
     const origemInput = screen.getByLabelText(/origem/i)
     const destinoInput = screen.getByLabelText(/destino/i)
@@ -61,9 +74,13 @@ describe('Should test RideForm', () => {
       },
       defaultStatus: 400,
     })
-    const fakeUseCase = new EstimateUseCase(fakeFetch)
+    const useCase = new EstimateUseCase(fakeFetch)
 
-    render(<EstimateForm useCase={fakeUseCase} />)
+    render(
+      <Router>
+        <EstimateForm useCase={useCase} />
+      </Router>,
+    )
 
     const customerIdInput = screen.getByLabelText(/customer id/i)
     const origemInput = screen.getByLabelText(/origem/i)

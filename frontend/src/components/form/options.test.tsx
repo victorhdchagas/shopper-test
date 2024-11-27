@@ -2,6 +2,9 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 import OptionsForm from './optionsform'
+import ConfirmUseCase from '../../lib/useCases/ride/confirm.usecase'
+import { BrowserRouter as Router } from 'react-router'
+import { ConfirmResponseInput } from '../../lib/types/services/ride/confirm.response'
 
 describe('Should test Options', () => {
   const defaultInput = {
@@ -166,23 +169,55 @@ describe('Should test Options', () => {
       ],
     },
   }
+  const defaultConfirmData: Omit<
+    ConfirmResponseInput,
+    'driver' | 'value' | 'customer_id'
+  > & { customerId: string } = {
+    customerId: '1',
+    origin: '-22.838203699999998,-43.2906853',
+    destination: '-22.837310300000002,-43.2867004',
+    distance: 2020,
+    duration: '272s',
+    // driver: {
+    //   id: 1,
+    //   name: 'James Bond',
+    // },
+    // value: 20.2,
+  }
+
   test('Should create a valid tsx options form', () => {
-    render(<OptionsForm options={defaultInput.options} />)
-    expect(screen.getAllByText(/nome do motorista/i)).toHaveLength(
+    render(
+      <Router>
+        <OptionsForm
+          confirmData={defaultConfirmData}
+          options={defaultInput.options}
+          useCase={new ConfirmUseCase()}
+        />
+      </Router>,
+    )
+    expect(screen.getAllByText(/nome/i)).toHaveLength(
       defaultInput.options.length,
     )
-    expect(screen.getAllByText(/descrição do motorista/i)).toHaveLength(
+    expect(screen.getAllByText(/descrição/i)).toHaveLength(
       defaultInput.options.length,
     )
-    expect(screen.getAllByText(/veículo do motorista/i)).toHaveLength(
+    expect(screen.getAllByText(/veículo/i)).toHaveLength(
       defaultInput.options.length,
     )
   })
   test('Should render all driver details', async () => {
-    render(<OptionsForm options={defaultInput.options} />)
-    const allDriverNames = screen.getAllByText(/nome do motorista/i)
-    const allDriverDescriptions = screen.getAllByText(/descrição do motorista/i)
-    const allDriverVehicles = screen.getAllByText(/veículo do motorista/i)
+    render(
+      <Router>
+        <OptionsForm
+          confirmData={defaultConfirmData}
+          options={defaultInput.options}
+          useCase={new ConfirmUseCase()}
+        />
+      </Router>,
+    )
+    const allDriverNames = screen.getAllByText(/nome/i)
+    const allDriverDescriptions = screen.getAllByText(/descrição/i)
+    const allDriverVehicles = screen.getAllByText(/veículo/i)
 
     // Verifica se o número de motoristas é o esperado
     expect(allDriverNames).toHaveLength(2) // ajuste o número conforme necessário
